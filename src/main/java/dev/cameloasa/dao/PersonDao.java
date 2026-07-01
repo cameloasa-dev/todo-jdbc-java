@@ -6,17 +6,17 @@ import java.util.Optional;
 
 public interface PersonDao {
 
-    Person create(Person person);
+  Person create(Person person);
 
-    boolean update(Person person);
+  boolean update(Person person);
 
-    boolean delete(int personId);
+  boolean delete(int personId);
 
-    Optional<Person> findById(int personId);
+  Optional<Person> findById(int personId);
 
-    List<Person> findAll();
+  List<Person> findAll();
 
-    List<Person> findByFirstName(String firstName);
+  List<Person> findByFirstName(String firstName);
 
-    List<Person> findByLastName(String lastName);
+  List<Person> findByLastName(String lastName);
 }

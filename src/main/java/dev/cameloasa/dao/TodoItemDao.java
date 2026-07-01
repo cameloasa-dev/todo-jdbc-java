@@ -2,7 +2,6 @@ package dev.cameloasa.dao;
 
 import dev.cameloasa.model.Person;
 import dev.cameloasa.model.TodoItem;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +33,4 @@ public interface TodoItemDao {
   List<TodoItem> findByDeadlineRange(LocalDate from, LocalDate to);
 
   List<TodoItem> findByTitle(String title);
-
-
 }

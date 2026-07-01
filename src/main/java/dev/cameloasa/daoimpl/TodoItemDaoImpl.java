@@ -4,7 +4,6 @@ import dev.cameloasa.dao.TodoItemDao;
 import dev.cameloasa.db.ConnectionManager;
 import dev.cameloasa.model.Person;
 import dev.cameloasa.model.TodoItem;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,302 +12,294 @@ import java.util.Optional;
 
 public class TodoItemDaoImpl implements TodoItemDao {
 
-    private static final String INSERT_SQL =
-            "INSERT INTO todo_item (title, description, deadline, done, assignee_id) VALUES (?, ?, ?, ?, ?)";
+  private static final String INSERT_SQL =
+      "INSERT INTO todo_item (title, description, deadline, done, assignee_id) VALUES (?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_SQL =
-            "UPDATE todo_item SET title = ?, description = ?, deadline = ?, done = ?, assignee_id = ? WHERE todo_id = ?";
+  private static final String UPDATE_SQL =
+      "UPDATE todo_item SET title = ?, description = ?, deadline = ?, done = ?, assignee_id = ? WHERE todo_id = ?";
 
-    private static final String DELETE_SQL =
-            "DELETE FROM todo_item WHERE todo_id = ?";
+  private static final String DELETE_SQL = "DELETE FROM todo_item WHERE todo_id = ?";
 
-    private static final String FIND_BY_ID_SQL =
-            "SELECT * FROM todo_item WHERE todo_id = ?";
+  private static final String FIND_BY_ID_SQL = "SELECT * FROM todo_item WHERE todo_id = ?";
 
-    private static final String FIND_ALL_SQL =
-            "SELECT * FROM todo_item";
+  private static final String FIND_ALL_SQL = "SELECT * FROM todo_item";
 
-    private static final String FIND_BY_DONE_SQL =
-            "SELECT * FROM todo_item WHERE done = ?";
+  private static final String FIND_BY_DONE_SQL = "SELECT * FROM todo_item WHERE done = ?";
 
-    private static final String FIND_BY_ASSIGNEE_ID_SQL =
-            "SELECT * FROM todo_item WHERE assignee_id = ?";
+  private static final String FIND_BY_ASSIGNEE_ID_SQL =
+      "SELECT * FROM todo_item WHERE assignee_id = ?";
 
-    private static final String FIND_UNASSIGNED_SQL =
-            "SELECT * FROM todo_item WHERE assignee_id IS NULL";
+  private static final String FIND_UNASSIGNED_SQL =
+      "SELECT * FROM todo_item WHERE assignee_id IS NULL";
 
-    private static final String FIND_BY_DEADLINE_SQL =
-            "SELECT * FROM todo_item WHERE deadline = ?";
+  private static final String FIND_BY_DEADLINE_SQL = "SELECT * FROM todo_item WHERE deadline = ?";
 
-    private static final String FIND_OVERDUE_SQL =
-            "SELECT * FROM todo_item WHERE done = 0 AND deadline < DATE('now')";
+  private static final String FIND_OVERDUE_SQL =
+      "SELECT * FROM todo_item WHERE done = 0 AND deadline < DATE('now')";
 
-    private static final String FIND_BY_DEADLINE_RANGE_SQL =
-            "SELECT * FROM todo_item WHERE deadline BETWEEN ? AND ?";
+  private static final String FIND_BY_DEADLINE_RANGE_SQL =
+      "SELECT * FROM todo_item WHERE deadline BETWEEN ? AND ?";
 
-    private static final String FIND_BY_TITLE_SQL =
-            "SELECT * FROM todo_item WHERE title LIKE ?";
+  private static final String FIND_BY_TITLE_SQL = "SELECT * FROM todo_item WHERE title LIKE ?";
 
+  private TodoItem mapRow(ResultSet rs) throws SQLException {
+    return new TodoItem(
+        rs.getInt("todo_id"),
+        rs.getString("title"),
+        rs.getString("description"),
+        rs.getDate("deadline").toLocalDate(),
+        rs.getBoolean("done"),
+        rs.getInt("assignee_id"));
+  }
 
-    private TodoItem mapRow(ResultSet rs) throws SQLException {
-        return new TodoItem(
-                rs.getInt("todo_id"),
-                rs.getString("title"),
-                rs.getString("description"),
-                rs.getDate("deadline").toLocalDate(),
-                rs.getBoolean("done"),
-                rs.getInt("assignee_id")
-        );
-    }
+  @Override
+  public TodoItem create(TodoItem item) {
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-    @Override
-    public TodoItem create(TodoItem item) {
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
+      ps.setString(1, item.getTitle());
+      ps.setString(2, item.getDescription());
+      ps.setDate(3, Date.valueOf(item.getDeadline()));
+      ps.setBoolean(4, item.isDone());
+      ps.setInt(5, item.getAssigneeId());
 
-            ps.setString(1, item.getTitle());
-            ps.setString(2, item.getDescription());
-            ps.setDate(3, Date.valueOf(item.getDeadline()));
-            ps.setBoolean(4, item.isDone());
-            ps.setInt(5, item.getAssigneeId());
+      ps.executeUpdate();
 
-            ps.executeUpdate();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    item.setTodoId(rs.getInt(1));
-                }
-            }
-
-            return item;
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to create TodoItem", e);
+      try (ResultSet rs = ps.getGeneratedKeys()) {
+        if (rs.next()) {
+          item.setTodoId(rs.getInt(1));
         }
+      }
+
+      return item;
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to create TodoItem", e);
     }
+  }
 
-    @Override
-    public boolean update(TodoItem item) {
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+  @Override
+  public boolean update(TodoItem item) {
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
 
-            ps.setString(1, item.getTitle());
-            ps.setString(2, item.getDescription());
-            ps.setDate(3, Date.valueOf(item.getDeadline()));
-            ps.setBoolean(4, item.isDone());
-            ps.setInt(5, item.getAssigneeId());
-            ps.setInt(6, item.getTodoId());
+      ps.setString(1, item.getTitle());
+      ps.setString(2, item.getDescription());
+      ps.setDate(3, Date.valueOf(item.getDeadline()));
+      ps.setBoolean(4, item.isDone());
+      ps.setInt(5, item.getAssigneeId());
+      ps.setInt(6, item.getTodoId());
 
-            return ps.executeUpdate() > 0;
+      return ps.executeUpdate() > 0;
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to update TodoItem", e);
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to update TodoItem", e);
+    }
+  }
+
+  @Override
+  public boolean deleteById(int todoId) {
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+
+      ps.setInt(1, todoId);
+      return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to delete TodoItem", e);
+    }
+  }
+
+  @Override
+  public Optional<TodoItem> findById(int todoId) {
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+
+      ps.setInt(1, todoId);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return Optional.of(mapRow(rs));
         }
+      }
+
+      return Optional.empty();
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find TodoItem by ID", e);
+    }
+  }
+
+  @Override
+  public List<TodoItem> findAll() {
+    List<TodoItem> items = new ArrayList<>();
+
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_ALL_SQL);
+        ResultSet rs = ps.executeQuery()) {
+
+      while (rs.next()) {
+        items.add(mapRow(rs));
+      }
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find all TodoItems", e);
     }
 
-    @Override
-    public boolean deleteById(int todoId) {
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+    return items;
+  }
 
-            ps.setInt(1, todoId);
-            return ps.executeUpdate() > 0;
+  @Override
+  public List<TodoItem> findByDoneStatus(boolean done) {
+    List<TodoItem> items = new ArrayList<>();
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to delete TodoItem", e);
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_BY_DONE_SQL)) {
+
+      ps.setBoolean(1, done);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          items.add(mapRow(rs));
         }
+      }
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find TodoItems by done status", e);
     }
 
-    @Override
-    public Optional<TodoItem> findById(int todoId) {
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+    return items;
+  }
 
-            ps.setInt(1, todoId);
+  @Override
+  public List<TodoItem> findByAssigneeId(int assigneeId) {
+    List<TodoItem> items = new ArrayList<>();
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapRow(rs));
-                }
-            }
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_BY_ASSIGNEE_ID_SQL)) {
 
-            return Optional.empty();
+      ps.setInt(1, assigneeId);
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find TodoItem by ID", e);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          items.add(mapRow(rs));
         }
+      }
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find TodoItems by assignee ID", e);
     }
 
-    @Override
-    public List<TodoItem> findAll() {
-        List<TodoItem> items = new ArrayList<>();
+    return items;
+  }
 
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_ALL_SQL);
-             ResultSet rs = ps.executeQuery()) {
+  @Override
+  public List<TodoItem> findByAssignee(Person assignee) {
+    return findByAssigneeId(assignee.getPersonId());
+  }
 
-            while (rs.next()) {
-                items.add(mapRow(rs));
-            }
+  @Override
+  public List<TodoItem> findUnassigned() {
+    List<TodoItem> items = new ArrayList<>();
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find all TodoItems", e);
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_UNASSIGNED_SQL);
+        ResultSet rs = ps.executeQuery()) {
+
+      while (rs.next()) {
+        items.add(mapRow(rs));
+      }
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find unassigned TodoItems", e);
+    }
+
+    return items;
+  }
+
+  @Override
+  public List<TodoItem> findByDeadline(LocalDate deadline) {
+    List<TodoItem> items = new ArrayList<>();
+
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_BY_DEADLINE_SQL)) {
+
+      ps.setDate(1, Date.valueOf(deadline));
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          items.add(mapRow(rs));
         }
+      }
 
-        return items;
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find TodoItems by deadline", e);
     }
 
-    @Override
-    public List<TodoItem> findByDoneStatus(boolean done) {
-        List<TodoItem> items = new ArrayList<>();
+    return items;
+  }
 
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_DONE_SQL)) {
+  @Override
+  public List<TodoItem> findOverdue() {
+    List<TodoItem> items = new ArrayList<>();
 
-            ps.setBoolean(1, done);
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_OVERDUE_SQL);
+        ResultSet rs = ps.executeQuery()) {
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    items.add(mapRow(rs));
-                }
-            }
+      while (rs.next()) {
+        items.add(mapRow(rs));
+      }
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find TodoItems by done status", e);
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find overdue TodoItems", e);
+    }
+
+    return items;
+  }
+
+  @Override
+  public List<TodoItem> findByDeadlineRange(LocalDate from, LocalDate to) {
+    List<TodoItem> items = new ArrayList<>();
+
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_BY_DEADLINE_RANGE_SQL)) {
+
+      ps.setDate(1, Date.valueOf(from));
+      ps.setDate(2, Date.valueOf(to));
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          items.add(mapRow(rs));
         }
+      }
 
-        return items;
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find TodoItems by deadline range", e);
     }
 
-    @Override
-    public List<TodoItem> findByAssigneeId(int assigneeId) {
-        List<TodoItem> items = new ArrayList<>();
+    return items;
+  }
 
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ASSIGNEE_ID_SQL)) {
+  @Override
+  public List<TodoItem> findByTitle(String title) {
+    List<TodoItem> items = new ArrayList<>();
 
-            ps.setInt(1, assigneeId);
+    try (Connection conn = ConnectionManager.getConnection();
+        PreparedStatement ps = conn.prepareStatement(FIND_BY_TITLE_SQL)) {
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    items.add(mapRow(rs));
-                }
-            }
+      ps.setString(1, "%" + title + "%");
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find TodoItems by assignee ID", e);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          items.add(mapRow(rs));
         }
+      }
 
-        return items;
+    } catch (SQLException e) {
+      throw new RuntimeException("Failed to find TodoItems by title", e);
     }
 
-    @Override
-    public List<TodoItem> findByAssignee(Person assignee) {
-        return findByAssigneeId(assignee.getPersonId());
-    }
-
-    @Override
-    public List<TodoItem> findUnassigned() {
-        List<TodoItem> items = new ArrayList<>();
-
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_UNASSIGNED_SQL);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                items.add(mapRow(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find unassigned TodoItems", e);
-        }
-
-        return items;
-    }
-
-    @Override
-    public List<TodoItem> findByDeadline(LocalDate deadline) {
-        List<TodoItem> items = new ArrayList<>();
-
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_DEADLINE_SQL)) {
-
-            ps.setDate(1, Date.valueOf(deadline));
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    items.add(mapRow(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find TodoItems by deadline", e);
-        }
-
-        return items;
-    }
-
-    @Override
-    public List<TodoItem> findOverdue() {
-        List<TodoItem> items = new ArrayList<>();
-
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_OVERDUE_SQL);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                items.add(mapRow(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find overdue TodoItems", e);
-        }
-
-        return items;
-    }
-
-    @Override
-    public List<TodoItem> findByDeadlineRange(LocalDate from, LocalDate to) {
-        List<TodoItem> items = new ArrayList<>();
-
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_DEADLINE_RANGE_SQL)) {
-
-            ps.setDate(1, Date.valueOf(from));
-            ps.setDate(2, Date.valueOf(to));
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    items.add(mapRow(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find TodoItems by deadline range", e);
-        }
-
-        return items;
-    }
-
-    @Override
-    public List<TodoItem> findByTitle(String title) {
-        List<TodoItem> items = new ArrayList<>();
-
-        try (Connection conn = ConnectionManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_TITLE_SQL)) {
-
-            ps.setString(1, "%" + title + "%");
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    items.add(mapRow(rs));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find TodoItems by title", e);
-        }
-
-        return items;
-    }
+    return items;
+  }
 }
