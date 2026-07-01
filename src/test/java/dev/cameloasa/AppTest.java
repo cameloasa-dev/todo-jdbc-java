@@ -8,7 +8,7 @@ class AppTest {
 
   @Test
   void appStarts() {
-    // Test minimal: aplicația pornește fără erori
+    // This test is just to ensure that the application context loads without any exceptions.
     assertTrue(true);
   }
 }
