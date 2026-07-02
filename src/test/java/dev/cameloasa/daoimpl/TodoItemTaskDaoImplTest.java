@@ -3,72 +3,112 @@ package dev.cameloasa.daoimpl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import dev.cameloasa.TestSetup;
+import dev.cameloasa.model.TodoItem;
 import dev.cameloasa.model.TodoItemTask;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.*;
 
 class TodoItemTaskDaoImplTest extends TestSetup {
 
-  private TodoItemTaskDaoImpl dao;
+    private TodoItemTaskDaoImpl taskDao;
+    private TodoItemDaoImpl itemDao;
 
-  @BeforeEach
-  void setup() {
-    dao = new TodoItemTaskDaoImpl();
-  }
+    @BeforeEach
+    void setup() {
+        taskDao = new TodoItemTaskDaoImpl();
+        itemDao = new TodoItemDaoImpl();
+    }
 
-  @Test
-  void create_shouldInsertTaskIntoDatabase() {
-    TodoItemTask task =
-        new TodoItemTask(
-            "Task title", "Task description", false, 0 // fără todo_item_id
-            );
+    private TodoItem createTestItem() {
+        return itemDao.create(
+            new TodoItem(
+                "Test Item",
+                "Item description",
+                LocalDate.now(),
+                false,
+                1   // VALID FK
+            )
+        );
+    }
 
-    TodoItemTask saved = dao.create(task);
+    @Test
+    void create_shouldInsertTaskIntoDatabase() {
+        TodoItem item = createTestItem();
 
-    assertTrue(saved.getTaskId() > 0);
-  }
+        TodoItemTask task = new TodoItemTask(
+                "Task title",
+                "Task description",
+                false,
+                item.getTodoId()
+        );
 
-  @Test
-  void findById_shouldReturnTask_whenExists() {
-    TodoItemTask task = new TodoItemTask("Find me", "Desc", false, 0);
+        TodoItemTask saved = taskDao.create(task);
 
-    TodoItemTask saved = dao.create(task);
+        assertTrue(saved.getTaskId() > 0);
+    }
 
-    Optional<TodoItemTask> found = dao.findById(saved.getTaskId());
+    @Test
+    void findById_shouldReturnTask_whenExists() {
+        TodoItem item = createTestItem();
 
-    assertTrue(found.isPresent());
-    assertEquals("Find me", found.get().getTitle());
-  }
+        TodoItemTask task = new TodoItemTask(
+                "Find me",
+                "Desc",
+                false,
+                item.getTodoId()
+        );
 
-  @Test
-  void update_shouldModifyTask() {
-    TodoItemTask task = new TodoItemTask("Old title", "Old desc", false, 0);
+        TodoItemTask saved = taskDao.create(task);
 
-    TodoItemTask saved = dao.create(task);
+        Optional<TodoItemTask> found = taskDao.findById(saved.getTaskId());
 
-    saved.setTitle("New title");
-    saved.setDescription("New desc");
-    saved.setDone(true);
+        assertTrue(found.isPresent());
+        assertEquals("Find me", found.get().getTitle());
+    }
 
-    boolean updated = dao.update(saved);
+    @Test
+    void update_shouldModifyTask() {
+        TodoItem item = createTestItem();
 
-    assertTrue(updated);
+        TodoItemTask task = new TodoItemTask(
+                "Old title",
+                "Old desc",
+                false,
+                item.getTodoId()
+        );
 
-    Optional<TodoItemTask> found = dao.findById(saved.getTaskId());
-    assertEquals("New title", found.get().getTitle());
-    assertEquals("New desc", found.get().getDescription());
-    assertTrue(found.get().isDone());
-  }
+        TodoItemTask saved = taskDao.create(task);
 
-  @Test
-  void delete_shouldRemoveTask() {
-    TodoItemTask task = new TodoItemTask("Delete me", "Desc", false, 0);
+        saved.setTitle("New title");
+        saved.setDescription("New desc");
+        saved.setDone(true);
 
-    TodoItemTask saved = dao.create(task);
+        boolean updated = taskDao.update(saved);
+        assertTrue(updated);
 
-    boolean deleted = dao.deleteById(saved.getTaskId());
+        Optional<TodoItemTask> found = taskDao.findById(saved.getTaskId());
+        assertEquals("New title", found.get().getTitle());
+        assertEquals("New desc", found.get().getDescription());
+        assertTrue(found.get().isDone());
+    }
 
-    assertTrue(deleted);
-    assertFalse(dao.findById(saved.getTaskId()).isPresent());
-  }
+    @Test
+    void delete_shouldRemoveTask() {
+        TodoItem item = createTestItem();
+
+        TodoItemTask task = new TodoItemTask(
+                "Delete me",
+                "Desc",
+                false,
+                item.getTodoId()
+        );
+
+        TodoItemTask saved = taskDao.create(task);
+
+        boolean deleted = taskDao.deleteById(saved.getTaskId());
+        assertTrue(deleted);
+
+        assertFalse(taskDao.findById(saved.getTaskId()).isPresent());
+    }
 }

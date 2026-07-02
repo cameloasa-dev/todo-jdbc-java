@@ -1,7 +1,10 @@
 package dev.cameloasa;
 
 import dev.cameloasa.config.DatabaseConfig;
+import dev.cameloasa.daoimpl.PersonDaoImpl;
 import dev.cameloasa.db.DatabaseInitializer;
+import dev.cameloasa.model.Person;
+
 import java.io.File;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -18,5 +21,11 @@ public class TestSetup {
 
     // Create database table for test.db
     DatabaseInitializer.initialize();
+
+    // ⭐ Seed test persons (FK fix)
+    PersonDaoImpl personDao = new PersonDaoImpl();
+    personDao.create(new Person("Test", "Person1")); // id = 1
+    personDao.create(new Person("Test", "Person2")); // id = 2
+    personDao.create(new Person("Test", "Person3")); // id = 3
   }
 }
