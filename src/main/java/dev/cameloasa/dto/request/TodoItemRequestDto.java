@@ -6,6 +6,6 @@ public class TodoItemRequestDto {
   public String title;
   public String description;
   public LocalDate deadline;
-  public boolean done;
-  public int assigneeId;
+  public Boolean done;
+  public Integer assigneeId;
 }

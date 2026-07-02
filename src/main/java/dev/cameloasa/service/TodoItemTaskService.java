@@ -2,7 +2,6 @@ package dev.cameloasa.service;
 
 import dev.cameloasa.dao.TodoItemTaskDao;
 import dev.cameloasa.model.TodoItemTask;
-import java.time.LocalDate;
 import java.util.List;
 
 public class TodoItemTaskService {
@@ -14,21 +13,21 @@ public class TodoItemTaskService {
   }
 
   public TodoItemTask createTask(
-      String title, String description, LocalDate deadline, Integer todoItemId) {
+      String title, String description, Boolean done, Integer todoItemId) {
 
     if (title == null || title.isBlank()) {
       throw new IllegalArgumentException("Task title cannot be empty");
     }
 
-    if (deadline == null) {
-      throw new IllegalArgumentException("Task deadline cannot be null");
+    if (done == null) {
+      throw new IllegalArgumentException("Task done status cannot be null");
     }
 
     if (todoItemId == null) {
       throw new IllegalArgumentException("Task must belong to a TodoItem");
     }
 
-    TodoItemTask task = new TodoItemTask(title, description, deadline, false, todoItemId);
+    TodoItemTask task = new TodoItemTask(title, description, done, todoItemId);
 
     return taskDao.create(task);
   }
@@ -60,12 +59,7 @@ public class TodoItemTaskService {
   }
 
   public boolean updateTask(
-      int id,
-      String newTitle,
-      String newDescription,
-      LocalDate newDeadline,
-      Boolean newDone,
-      Integer newTodoItemId) {
+      int id, String newTitle, String newDescription, Boolean newDone, Integer newTodoItemId) {
     TodoItemTask task = findTaskById(id);
 
     if (newTitle != null && !newTitle.isBlank()) {
@@ -74,10 +68,6 @@ public class TodoItemTaskService {
 
     if (newDescription != null && !newDescription.isBlank()) {
       task.setDescription(newDescription);
-    }
-
-    if (newDeadline != null) {
-      task.setDeadline(newDeadline);
     }
 
     if (newDone != null) {

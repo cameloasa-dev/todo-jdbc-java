@@ -134,11 +134,13 @@ DELETE /tasks/{id} — șterge task‑ul
 GET /tasks/todoitem/{todoItemId} — task‑uri ale unui item
 GET /tasks/done/{status} — task‑uri finalizate / nefinalizate
 GET /tasks/title/{title} — task‑uri filtrate după titlu
-GET /tasks/overdue — task‑uri cu deadline depășit
 ```
 
 🔹The REST API will be available at:
 [http://localhost:7000]
+
+🔹Swagger:
+[http://localhost:7000/swagger.html]
 
 ## 🧪 Running the Project
 
@@ -185,8 +187,6 @@ mvn checkstyle:check
 Migration to Spring Boot
 
 Hot reload with DevTools
-
-DTOs for request/response
 
 Validation with Jakarta Validation
 

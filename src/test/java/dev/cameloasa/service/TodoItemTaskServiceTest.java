@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import dev.cameloasa.dao.TodoItemTaskDao;
 import dev.cameloasa.model.TodoItemTask;
-import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 class TodoItemTaskServiceTest {
@@ -18,12 +17,12 @@ class TodoItemTaskServiceTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> {
-          service.createTask("", "desc", LocalDate.now(), 1);
+          service.createTask("", "desc", false, 1);
         });
   }
 
   @Test
-  void createTask_shouldThrowException_whenDeadlineIsNull() {
+  void createTask_shouldThrowException_whenDoneIsNull() {
     TodoItemTaskDao dao = mock(TodoItemTaskDao.class);
     TodoItemTaskService service = new TodoItemTaskService(dao);
 
@@ -39,10 +38,10 @@ class TodoItemTaskServiceTest {
     TodoItemTaskDao dao = mock(TodoItemTaskDao.class);
     TodoItemTaskService service = new TodoItemTaskService(dao);
 
-    TodoItemTask expected = new TodoItemTask("title", "desc", LocalDate.now(), false, 1);
+    TodoItemTask expected = new TodoItemTask("title", "desc", false, 1);
     when(dao.create(any())).thenReturn(expected);
 
-    TodoItemTask result = service.createTask("title", "desc", LocalDate.now(), 1);
+    TodoItemTask result = service.createTask("title", "desc", false, 1);
 
     assertEquals("title", result.getTitle());
     assertEquals("desc", result.getDescription());

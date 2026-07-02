@@ -3,15 +3,15 @@
   "info": {
     "title": "Todo API - Javalin",
     "version": "1.0.0",
-    "description": "API pentru gestionarea persoanelor, item-urilor și task-urilor."
+    "description": "API for managing persons, items and tasks."
   },
   "paths": {
     "/person": {
       "get": {
-        "summary": "Returnează toate persoanele",
+        "summary": "Get all persons",
         "responses": {
           "200": {
-            "description": "Lista de persoane",
+            "description": "List persons",
             "content": {
               "application/json": {
                 "schema": {
@@ -24,7 +24,7 @@
         }
       },
       "post": {
-        "summary": "Creează o persoană nouă",
+        "summary": "Create a new person",
         "requestBody": {
           "required": true,
           "content": {
@@ -35,7 +35,7 @@
         },
         "responses": {
           "201": {
-            "description": "Persoană creată",
+            "description": "Person created",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/PersonResponse" }
@@ -48,24 +48,24 @@
 
     "/person/{id}": {
       "get": {
-        "summary": "Returnează persoana după ID",
+        "summary": "Get a person by ID",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
           "200": {
-            "description": "Persoană găsită",
+            "description": "Person found",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/PersonResponse" }
               }
             }
           },
-          "404": { "description": "Persoană inexistentă" }
+          "404": { "description": "Person not found" }
         }
       },
       "patch": {
-        "summary": "Actualizează parțial o persoană",
+        "summary": "Update a person partially",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
@@ -77,26 +77,26 @@
           }
         },
         "responses": {
-          "200": { "description": "Persoană actualizată" }
+          "200": { "description": "Person updated" }
         }
       },
       "delete": {
-        "summary": "Șterge persoana",
+        "summary": "Delete a person",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
-          "204": { "description": "Șters cu succes" }
+          "204": { "description": "Deleted successfully" }
         }
       }
     },
 
     "/items": {
       "get": {
-        "summary": "Returnează toate item-urile",
+        "summary": "List all items",
         "responses": {
           "200": {
-            "description": "Lista de item-uri",
+            "description": "List items",
             "content": {
               "application/json": {
                 "schema": {
@@ -109,7 +109,7 @@
         }
       },
       "post": {
-        "summary": "Creează un item nou",
+        "summary": "Create a new item",
         "requestBody": {
           "required": true,
           "content": {
@@ -120,7 +120,7 @@
         },
         "responses": {
           "201": {
-            "description": "Item creat",
+            "description": "Item created",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/TodoItemResponse" }
@@ -133,24 +133,24 @@
 
     "/items/{id}": {
       "get": {
-        "summary": "Returnează item-ul după ID",
+        "summary": "Get an item by ID",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
           "200": {
-            "description": "Item găsit",
+            "description": "Item found",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/TodoItemResponse" }
               }
             }
           },
-          "404": { "description": "Item inexistent" }
+          "404": { "description": "Item not found" }
         }
       },
       "patch": {
-        "summary": "Actualizează parțial un item",
+        "summary": "Update an item partially",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
@@ -162,26 +162,26 @@
           }
         },
         "responses": {
-          "200": { "description": "Item actualizat" }
+          "200": { "description": "Item updated" }
         }
       },
       "delete": {
-        "summary": "Șterge item-ul",
+        "summary": "Delete an item",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
-          "204": { "description": "Șters cu succes" }
+          "204": { "description": "Deleted successfully" }
         }
       }
     },
 
     "/tasks": {
       "get": {
-        "summary": "Returnează toate task-urile",
+        "summary": "List all tasks",
         "responses": {
           "200": {
-            "description": "Lista de task-uri",
+            "description": "List tasks",
             "content": {
               "application/json": {
                 "schema": {
@@ -194,7 +194,7 @@
         }
       },
       "post": {
-        "summary": "Creează un task nou",
+        "summary": "Create a new task",
         "requestBody": {
           "required": true,
           "content": {
@@ -205,7 +205,7 @@
         },
         "responses": {
           "201": {
-            "description": "Task creat",
+            "description": "Task created",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/TodoTaskResponse" }
@@ -218,24 +218,24 @@
 
     "/tasks/{id}": {
       "get": {
-        "summary": "Returnează task-ul după ID",
+        "summary": "Get a task by ID",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
           "200": {
-            "description": "Task găsit",
+            "description": "Task found",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/TodoTaskResponse" }
               }
             }
           },
-          "404": { "description": "Task inexistent" }
+          "404": { "description": "Task not found" }
         }
       },
       "patch": {
-        "summary": "Actualizează parțial un task",
+        "summary": "Update a task partially",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
@@ -247,16 +247,16 @@
           }
         },
         "responses": {
-          "200": { "description": "Task actualizat" }
+          "200": { "description": "Task updated" }
         }
       },
       "delete": {
-        "summary": "Șterge task-ul",
+        "summary": "Delete a task",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
         ],
         "responses": {
-          "204": { "description": "Șters cu succes" }
+          "204": { "description": "Deleted successfully" }
         }
       }
     }
@@ -266,21 +266,24 @@
       "PersonCreate": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" }
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" }
         },
-        "required": ["name"]
+        "required": ["firstName", "lastName"]
       },
       "PersonUpdate": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" }
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" }
         }
       },
       "PersonResponse": {
         "type": "object",
         "properties": {
           "id": { "type": "integer" },
-          "name": { "type": "string" }
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" }
         }
       },
 
@@ -288,8 +291,10 @@
         "type": "object",
         "properties": {
           "title": { "type": "string" },
-          "deadline": { "type": "string", "format": "date-time" },
-          "personId": { "type": "integer" }
+          "description": { "type": "string" },
+          "deadline": { "type": "string", "format": "date" },
+          "done": { "type": "boolean" },
+          "assigneeId": { "type": "integer" }
         },
         "required": ["title"]
       },
@@ -297,19 +302,21 @@
         "type": "object",
         "properties": {
           "title": { "type": "string" },
-          "deadline": { "type": "string", "format": "date-time" },
+          "description": { "type": "string" },
+          "deadline": { "type": "string", "format": "date" },
           "done": { "type": "boolean" },
-          "personId": { "type": "integer" }
+          "assigneeId": { "type": "integer" }
         }
       },
       "TodoItemResponse": {
         "type": "object",
         "properties": {
-          "id": { "type": "integer" },
+          "todoId": { "type": "integer" },
           "title": { "type": "string" },
-          "deadline": { "type": "string", "format": "date-time" },
+          "description": { "type": "string" },
+          "deadline": { "type": "string", "format": "date" },
           "done": { "type": "boolean" },
-          "personId": { "type": "integer" }
+          "assigneeId": { "type": "integer" }
         }
       },
 
@@ -317,7 +324,7 @@
         "type": "object",
         "properties": {
           "title": { "type": "string" },
-          "deadline": { "type": "string", "format": "date-time" },
+          "done": { "type": "boolean" },
           "todoItemId": { "type": "integer" }
         },
         "required": ["title", "todoItemId"]
@@ -326,16 +333,16 @@
         "type": "object",
         "properties": {
           "title": { "type": "string" },
-          "deadline": { "type": "string", "format": "date-time" },
-          "done": { "type": "boolean" }
+          "done": { "type": "boolean" },
+          "todoItemId": { "type": "integer"}
         }
       },
       "TodoTaskResponse": {
         "type": "object",
         "properties": {
-          "id": { "type": "integer" },
+          "taskId": { "type": "integer" },
           "title": { "type": "string" },
-          "deadline": { "type": "string", "format": "date-time" },
+          "description": { "type": "string" },
           "done": { "type": "boolean" },
           "todoItemId": { "type": "integer" }
         }

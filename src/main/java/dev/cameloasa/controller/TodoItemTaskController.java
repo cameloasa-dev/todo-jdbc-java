@@ -2,7 +2,6 @@ package dev.cameloasa.controller;
 
 import dev.cameloasa.model.TodoItemTask;
 import dev.cameloasa.service.TodoItemTaskService;
-import java.time.LocalDate;
 import java.util.List;
 
 public class TodoItemTaskController {
@@ -14,8 +13,8 @@ public class TodoItemTaskController {
   }
 
   public TodoItemTask createTask(
-      String title, String description, LocalDate deadline, Integer todoItemId) {
-    return taskService.createTask(title, description, deadline, todoItemId);
+      String title, String description, Boolean done, Integer todoItemId) {
+    return taskService.createTask(title, description, done, todoItemId);
   }
 
   public TodoItemTask getTaskById(int id) {
@@ -43,14 +42,8 @@ public class TodoItemTaskController {
   }
 
   public boolean updateTask(
-      int id,
-      String newTitle,
-      String newDescription,
-      LocalDate newDeadline,
-      Boolean newDone,
-      Integer newTodoItemId) {
-    return taskService.updateTask(
-        id, newTitle, newDescription, newDeadline, newDone, newTodoItemId);
+      int id, String newTitle, String newDescription, Boolean newDone, Integer newTodoItemId) {
+    return taskService.updateTask(id, newTitle, newDescription, newDone, newTodoItemId);
   }
 
   public boolean deleteTask(int id) {

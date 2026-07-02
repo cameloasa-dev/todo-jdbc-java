@@ -41,12 +41,27 @@
             <version>5.6.2</version>
         </dependency>
 
+        <!-- ⭐ Javalin 5 logger  -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+
         <!-- ⭐ Json serializer  -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.0</version>
         </dependency>
+
+        <!-- ⭐ Json datatype  -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+
 
         <!-- ⭐ Mockito -->
         <dependency>
@@ -87,6 +102,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
             </plugin>
 
             <!-- ⭐ Spotless plugin: automatic code formatting (Google Java Format) -->

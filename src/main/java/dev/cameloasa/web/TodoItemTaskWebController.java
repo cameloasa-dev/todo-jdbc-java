@@ -11,10 +11,10 @@ import java.util.List;
 
 public class TodoItemTaskWebController {
 
-  private static final TodoItemTaskController controller =
-      new TodoItemTaskController(new TodoItemTaskService(new TodoItemTaskDaoImpl()));
-
   public static void registerRoutes(Javalin app) {
+
+    TodoItemTaskController controller =
+        new TodoItemTaskController(new TodoItemTaskService(new TodoItemTaskDaoImpl()));
 
     // GET /tasks
     app.get(
@@ -31,8 +31,7 @@ public class TodoItemTaskWebController {
                               t.getTitle(),
                               t.getDescription(),
                               t.isDone(),
-                              t.getTodoItemId(),
-                              t.getDeadline()))
+                              t.getTodoItemId()))
                   .toList();
 
           ctx.json(response);
@@ -51,8 +50,7 @@ public class TodoItemTaskWebController {
                   task.getTitle(),
                   task.getDescription(),
                   task.isDone(),
-                  task.getTodoItemId(),
-                  task.getDeadline());
+                  task.getTodoItemId());
 
           ctx.json(response);
         });
@@ -64,7 +62,7 @@ public class TodoItemTaskWebController {
           TodoItemTaskRequestDto dto = ctx.bodyAsClass(TodoItemTaskRequestDto.class);
 
           TodoItemTask created =
-              controller.createTask(dto.title, dto.description, dto.deadline, dto.todoItemId);
+              controller.createTask(dto.title, dto.description, dto.done, dto.todoItemId);
 
           TodoItemTaskResponseDto response =
               new TodoItemTaskResponseDto(
@@ -72,8 +70,7 @@ public class TodoItemTaskWebController {
                   created.getTitle(),
                   created.getDescription(),
                   created.isDone(),
-                  created.getTodoItemId(),
-                  created.getDeadline());
+                  created.getTodoItemId());
 
           ctx.status(201).json(response);
         });
@@ -86,8 +83,7 @@ public class TodoItemTaskWebController {
           TodoItemTaskRequestDto dto = ctx.bodyAsClass(TodoItemTaskRequestDto.class);
 
           boolean updated =
-              controller.updateTask(
-                  id, dto.title, dto.description, dto.deadline, dto.done, dto.todoItemId);
+              controller.updateTask(id, dto.title, dto.description, dto.done, dto.todoItemId);
 
           ctx.json(updated);
         });
@@ -117,8 +113,7 @@ public class TodoItemTaskWebController {
                               t.getTitle(),
                               t.getDescription(),
                               t.isDone(),
-                              t.getTodoItemId(),
-                              t.getDeadline()))
+                              t.getTodoItemId()))
                   .toList();
 
           ctx.json(response);
@@ -140,8 +135,7 @@ public class TodoItemTaskWebController {
                               t.getTitle(),
                               t.getDescription(),
                               t.isDone(),
-                              t.getTodoItemId(),
-                              t.getDeadline()))
+                              t.getTodoItemId()))
                   .toList();
 
           ctx.json(response);
@@ -163,8 +157,7 @@ public class TodoItemTaskWebController {
                               t.getTitle(),
                               t.getDescription(),
                               t.isDone(),
-                              t.getTodoItemId(),
-                              t.getDeadline()))
+                              t.getTodoItemId()))
                   .toList();
 
           ctx.json(response);
@@ -185,8 +178,7 @@ public class TodoItemTaskWebController {
                               t.getTitle(),
                               t.getDescription(),
                               t.isDone(),
-                              t.getTodoItemId(),
-                              t.getDeadline()))
+                              t.getTodoItemId()))
                   .toList();
 
           ctx.json(response);

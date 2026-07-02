@@ -47,7 +47,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
         rs.getInt("todo_id"),
         rs.getString("title"),
         rs.getString("description"),
-        rs.getDate("deadline").toLocalDate(),
+        LocalDate.parse(rs.getString("deadline")),
         rs.getBoolean("done"),
         rs.getInt("assignee_id"));
   }
@@ -59,7 +59,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
 
       ps.setString(1, item.getTitle());
       ps.setString(2, item.getDescription());
-      ps.setDate(3, Date.valueOf(item.getDeadline()));
+      ps.setString(3, item.getDeadline().toString());
       ps.setBoolean(4, item.isDone());
       ps.setInt(5, item.getAssigneeId());
 
@@ -85,7 +85,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
 
       ps.setString(1, item.getTitle());
       ps.setString(2, item.getDescription());
-      ps.setDate(3, Date.valueOf(item.getDeadline()));
+      ps.setString(3, item.getDeadline().toString());
       ps.setBoolean(4, item.isDone());
       ps.setInt(5, item.getAssigneeId());
       ps.setInt(6, item.getTodoId());
@@ -265,8 +265,8 @@ public class TodoItemDaoImpl implements TodoItemDao {
     try (Connection conn = ConnectionManager.getConnection();
         PreparedStatement ps = conn.prepareStatement(FIND_BY_DEADLINE_RANGE_SQL)) {
 
-      ps.setDate(1, Date.valueOf(from));
-      ps.setDate(2, Date.valueOf(to));
+      ps.setString(1, from.toString());
+      ps.setString(2, to.toString());
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {

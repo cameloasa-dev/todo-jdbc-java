@@ -12,10 +12,10 @@ import java.util.List;
 
 public class TodoItemWebController {
 
-  private static final TodoItemController controller =
-      new TodoItemController(new TodoItemService(new TodoItemDaoImpl()));
-
   public static void registerRoutes(Javalin app) {
+
+    TodoItemController controller =
+        new TodoItemController(new TodoItemService(new TodoItemDaoImpl()));
 
     // GET /items
     app.get(

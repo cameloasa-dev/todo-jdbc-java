@@ -2,6 +2,7 @@ package dev.cameloasa.dto.response;
 
 import java.time.LocalDate;
 
+
 public class TodoItemResponseDto {
   public int todoId;
   public String title;
@@ -9,6 +10,8 @@ public class TodoItemResponseDto {
   public LocalDate deadline;
   public boolean done;
   public int assigneeId;
+  
+
 
   public TodoItemResponseDto(
       int todoId,
@@ -16,12 +19,16 @@ public class TodoItemResponseDto {
       String description,
       LocalDate deadline,
       boolean done,
-      int assigneeId) {
+      int assigneeId
+  ) {
     this.todoId = todoId;
     this.title = title;
     this.description = description;
     this.deadline = deadline;
     this.done = done;
     this.assigneeId = assigneeId;
+
   }
 }
+
+

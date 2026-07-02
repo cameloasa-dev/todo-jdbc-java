@@ -1,7 +1,5 @@
 package dev.cameloasa.model;
 
-import java.time.LocalDate;
-
 public class TodoItemTask {
 
   private int taskId;
@@ -9,7 +7,6 @@ public class TodoItemTask {
   private String description;
   private boolean done;
   private int todoItemId;
-  private LocalDate deadline;
 
   public TodoItemTask() {}
 
@@ -18,23 +15,12 @@ public class TodoItemTask {
     this.description = description;
     this.done = done;
     this.todoItemId = todoItemId;
-    this.deadline = null; // Initialize deadline to null if not provided
-  }
-
-  public TodoItemTask(
-      String title, String description, LocalDate deadline, boolean done, int todoItemId) {
-    this.title = title;
-    this.description = description;
-    this.deadline = deadline;
-    this.done = done;
-    this.todoItemId = todoItemId;
   }
 
   public TodoItemTask(String title, String description, int todoItemId) {
     this.title = title;
     this.description = description;
     this.todoItemId = todoItemId;
-    this.deadline = null;
   }
 
   public TodoItemTask(int taskId, String title, String description, boolean done, int todoItemId) {
@@ -81,14 +67,6 @@ public class TodoItemTask {
     return todoItemId;
   }
 
-  public LocalDate getDeadline() {
-    return deadline;
-  }
-
-  public void setDeadline(LocalDate deadline) {
-    this.deadline = deadline;
-  }
-
   public void setTodoItemId(int todoItemId) {
     this.todoItemId = todoItemId;
   }
@@ -106,8 +84,6 @@ public class TodoItemTask {
         + '\''
         + ", done="
         + done
-        + ", deadline="
-        + deadline
         + ", todoItemId="
         + todoItemId
         + '}';
