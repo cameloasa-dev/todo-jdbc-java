@@ -1,0 +1,345 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Todo API - Javalin",
+    "version": "1.0.0",
+    "description": "API pentru gestionarea persoanelor, item-urilor și task-urilor."
+  },
+  "paths": {
+    "/person": {
+      "get": {
+        "summary": "Returnează toate persoanele",
+        "responses": {
+          "200": {
+            "description": "Lista de persoane",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/PersonResponse" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creează o persoană nouă",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PersonCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Persoană creată",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/person/{id}": {
+      "get": {
+        "summary": "Returnează persoana după ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persoană găsită",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PersonResponse" }
+              }
+            }
+          },
+          "404": { "description": "Persoană inexistentă" }
+        }
+      },
+      "patch": {
+        "summary": "Actualizează parțial o persoană",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PersonUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Persoană actualizată" }
+        }
+      },
+      "delete": {
+        "summary": "Șterge persoana",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Șters cu succes" }
+        }
+      }
+    },
+
+    "/items": {
+      "get": {
+        "summary": "Returnează toate item-urile",
+        "responses": {
+          "200": {
+            "description": "Lista de item-uri",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TodoItemResponse" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creează un item nou",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TodoItemCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item creat",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoItemResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/items/{id}": {
+      "get": {
+        "summary": "Returnează item-ul după ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item găsit",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoItemResponse" }
+              }
+            }
+          },
+          "404": { "description": "Item inexistent" }
+        }
+      },
+      "patch": {
+        "summary": "Actualizează parțial un item",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TodoItemUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Item actualizat" }
+        }
+      },
+      "delete": {
+        "summary": "Șterge item-ul",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Șters cu succes" }
+        }
+      }
+    },
+
+    "/tasks": {
+      "get": {
+        "summary": "Returnează toate task-urile",
+        "responses": {
+          "200": {
+            "description": "Lista de task-uri",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TodoTaskResponse" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creează un task nou",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TodoTaskCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task creat",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoTaskResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/tasks/{id}": {
+      "get": {
+        "summary": "Returnează task-ul după ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task găsit",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TodoTaskResponse" }
+              }
+            }
+          },
+          "404": { "description": "Task inexistent" }
+        }
+      },
+      "patch": {
+        "summary": "Actualizează parțial un task",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TodoTaskUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Task actualizat" }
+        }
+      },
+      "delete": {
+        "summary": "Șterge task-ul",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Șters cu succes" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PersonCreate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "required": ["name"]
+      },
+      "PersonUpdate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        }
+      },
+      "PersonResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" }
+        }
+      },
+
+      "TodoItemCreate": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "personId": { "type": "integer" }
+        },
+        "required": ["title"]
+      },
+      "TodoItemUpdate": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "done": { "type": "boolean" },
+          "personId": { "type": "integer" }
+        }
+      },
+      "TodoItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "done": { "type": "boolean" },
+          "personId": { "type": "integer" }
+        }
+      },
+
+      "TodoTaskCreate": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "todoItemId": { "type": "integer" }
+        },
+        "required": ["title", "todoItemId"]
+      },
+      "TodoTaskUpdate": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "done": { "type": "boolean" }
+        }
+      },
+      "TodoTaskResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "deadline": { "type": "string", "format": "date-time" },
+          "done": { "type": "boolean" },
+          "todoItemId": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

@@ -34,11 +34,18 @@
             <version>3.45.1.0</version>
         </dependency>
 
-        <!-- ⭐ Javalin 4  -->
+        <!-- ⭐ Javalin 5  -->
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
             <version>5.6.2</version>
+        </dependency>
+
+        <!-- ⭐ Json serializer  -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.0</version>
         </dependency>
 
         <!-- ⭐ Mockito -->
