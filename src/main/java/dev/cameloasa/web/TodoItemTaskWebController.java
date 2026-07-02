@@ -2,9 +2,12 @@ package dev.cameloasa.web;
 
 import dev.cameloasa.controller.TodoItemTaskController;
 import dev.cameloasa.daoimpl.TodoItemTaskDaoImpl;
+import dev.cameloasa.dto.request.TodoItemTaskRequestDto;
+import dev.cameloasa.dto.response.TodoItemTaskResponseDto;
+import dev.cameloasa.model.TodoItemTask;
 import dev.cameloasa.service.TodoItemTaskService;
 import io.javalin.Javalin;
-import java.time.LocalDate;
+import java.util.List;
 
 public class TodoItemTaskWebController {
 
@@ -13,94 +16,180 @@ public class TodoItemTaskWebController {
 
   public static void registerRoutes(Javalin app) {
 
-    // GET all tasks
+    // GET /tasks
     app.get(
         "/tasks",
         ctx -> {
-          ctx.json(controller.getAllTasks());
+          List<TodoItemTask> tasks = controller.getAllTasks();
+
+          List<TodoItemTaskResponseDto> response =
+              tasks.stream()
+                  .map(
+                      t ->
+                          new TodoItemTaskResponseDto(
+                              t.getTaskId(),
+                              t.getTitle(),
+                              t.getDescription(),
+                              t.isDone(),
+                              t.getTodoItemId(),
+                              t.getDeadline()))
+                  .toList();
+
+          ctx.json(response);
         });
 
-    // GET task by id
+    // GET /tasks/{id}
     app.get(
         "/tasks/{id}",
         ctx -> {
           int id = Integer.parseInt(ctx.pathParam("id"));
-          ctx.json(controller.getTaskById(id));
+          TodoItemTask task = controller.getTaskById(id);
+
+          TodoItemTaskResponseDto response =
+              new TodoItemTaskResponseDto(
+                  task.getTaskId(),
+                  task.getTitle(),
+                  task.getDescription(),
+                  task.isDone(),
+                  task.getTodoItemId(),
+                  task.getDeadline());
+
+          ctx.json(response);
         });
 
-    // POST create task
+    // POST /tasks
     app.post(
         "/tasks",
         ctx -> {
-          String title = ctx.formParam("title");
-          String description = ctx.formParam("description");
-          String deadlineStr = ctx.formParam("deadline");
-          String todoItemIdStr = ctx.formParam("todoItemId");
+          TodoItemTaskRequestDto dto = ctx.bodyAsClass(TodoItemTaskRequestDto.class);
 
-          LocalDate deadline = LocalDate.parse(deadlineStr);
-          Integer todoItemId = Integer.parseInt(todoItemIdStr);
+          TodoItemTask created =
+              controller.createTask(dto.title, dto.description, dto.deadline, dto.todoItemId);
 
-          ctx.status(201).json(controller.createTask(title, description, deadline, todoItemId));
+          TodoItemTaskResponseDto response =
+              new TodoItemTaskResponseDto(
+                  created.getTaskId(),
+                  created.getTitle(),
+                  created.getDescription(),
+                  created.isDone(),
+                  created.getTodoItemId(),
+                  created.getDeadline());
+
+          ctx.status(201).json(response);
         });
 
-    // PUT update task
-    app.put(
+    // PATCH /tasks/{id}
+    app.patch(
         "/tasks/{id}",
         ctx -> {
           int id = Integer.parseInt(ctx.pathParam("id"));
+          TodoItemTaskRequestDto dto = ctx.bodyAsClass(TodoItemTaskRequestDto.class);
 
-          String newTitle = ctx.formParam("title");
-          String newDescription = ctx.formParam("description");
-          String newDeadlineStr = ctx.formParam("deadline");
-          String newDoneStr = ctx.formParam("done");
-          String newTodoItemIdStr = ctx.formParam("todoItemId");
-
-          LocalDate newDeadline = newDeadlineStr == null ? null : LocalDate.parse(newDeadlineStr);
-          Boolean newDone = newDoneStr == null ? null : Boolean.parseBoolean(newDoneStr);
-          Integer newTodoItemId =
-              newTodoItemIdStr == null ? null : Integer.parseInt(newTodoItemIdStr);
-
-          ctx.json(
+          boolean updated =
               controller.updateTask(
-                  id, newTitle, newDescription, newDeadline, newDone, newTodoItemId));
+                  id, dto.title, dto.description, dto.deadline, dto.done, dto.todoItemId);
+
+          ctx.json(updated);
         });
 
-    // DELETE task
+    // DELETE /tasks/{id}
     app.delete(
         "/tasks/{id}",
         ctx -> {
           int id = Integer.parseInt(ctx.pathParam("id"));
-          ctx.json(controller.deleteTask(id));
+          boolean deleted = controller.deleteTask(id);
+          ctx.json(deleted);
         });
 
-    // GET tasks by todoItemId
+    // GET /tasks/todoitem/{todoItemId}
     app.get(
         "/tasks/todoitem/{todoItemId}",
         ctx -> {
           int todoItemId = Integer.parseInt(ctx.pathParam("todoItemId"));
-          ctx.json(controller.getTasksByTodoItemId(todoItemId));
+          List<TodoItemTask> tasks = controller.getTasksByTodoItemId(todoItemId);
+
+          List<TodoItemTaskResponseDto> response =
+              tasks.stream()
+                  .map(
+                      t ->
+                          new TodoItemTaskResponseDto(
+                              t.getTaskId(),
+                              t.getTitle(),
+                              t.getDescription(),
+                              t.isDone(),
+                              t.getTodoItemId(),
+                              t.getDeadline()))
+                  .toList();
+
+          ctx.json(response);
         });
 
-    // GET tasks by done status
+    // GET /tasks/done/{status}
     app.get(
         "/tasks/done/{status}",
         ctx -> {
           boolean status = Boolean.parseBoolean(ctx.pathParam("status"));
-          ctx.json(controller.getTasksByDone(status));
+          List<TodoItemTask> tasks = controller.getTasksByDone(status);
+
+          List<TodoItemTaskResponseDto> response =
+              tasks.stream()
+                  .map(
+                      t ->
+                          new TodoItemTaskResponseDto(
+                              t.getTaskId(),
+                              t.getTitle(),
+                              t.getDescription(),
+                              t.isDone(),
+                              t.getTodoItemId(),
+                              t.getDeadline()))
+                  .toList();
+
+          ctx.json(response);
         });
 
-    // GET tasks by title
+    // GET /tasks/title/{title}
     app.get(
         "/tasks/title/{title}",
         ctx -> {
-          ctx.json(controller.getTasksByTitle(ctx.pathParam("title")));
+          String title = ctx.pathParam("title");
+          List<TodoItemTask> tasks = controller.getTasksByTitle(title);
+
+          List<TodoItemTaskResponseDto> response =
+              tasks.stream()
+                  .map(
+                      t ->
+                          new TodoItemTaskResponseDto(
+                              t.getTaskId(),
+                              t.getTitle(),
+                              t.getDescription(),
+                              t.isDone(),
+                              t.getTodoItemId(),
+                              t.getDeadline()))
+                  .toList();
+
+          ctx.json(response);
         });
 
-    // GET overdue tasks
+    // GET /tasks/overdue
     app.get(
         "/tasks/overdue",
         ctx -> {
-          ctx.json(controller.getOverdueTasks());
+          List<TodoItemTask> tasks = controller.getOverdueTasks();
+
+          List<TodoItemTaskResponseDto> response =
+              tasks.stream()
+                  .map(
+                      t ->
+                          new TodoItemTaskResponseDto(
+                              t.getTaskId(),
+                              t.getTitle(),
+                              t.getDescription(),
+                              t.isDone(),
+                              t.getTodoItemId(),
+                              t.getDeadline()))
+                  .toList();
+
+          ctx.json(response);
         });
   }
 }

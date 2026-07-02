@@ -2,6 +2,9 @@ package dev.cameloasa.web;
 
 import dev.cameloasa.controller.PersonController;
 import dev.cameloasa.daoimpl.PersonDaoImpl;
+import dev.cameloasa.dto.request.PersonRequestDto;
+import dev.cameloasa.dto.response.PersonResponseDto;
+import dev.cameloasa.model.Person;
 import dev.cameloasa.service.PersonService;
 import io.javalin.Javalin;
 
@@ -16,35 +19,56 @@ public class PersonWebController {
         "/person/{id}",
         ctx -> {
           int id = Integer.parseInt(ctx.pathParam("id"));
-          ctx.json(controller.getPersonById(id));
+          Person person = controller.getPersonById(id);
+
+          PersonResponseDto response =
+              new PersonResponseDto(
+                  person.getPersonId(), person.getFirstName(), person.getLastName());
+
+          ctx.json(response);
         });
 
     // GET /person
     app.get(
         "/person",
         ctx -> {
-          ctx.json(controller.getAllPeople());
+          var people = controller.getAllPeople();
+
+          var responseList =
+              people.stream()
+                  .map(
+                      p ->
+                          new PersonResponseDto(p.getPersonId(), p.getFirstName(), p.getLastName()))
+                  .toList();
+
+          ctx.json(responseList);
         });
 
     // POST /person
     app.post(
         "/person",
         ctx -> {
-          String firstName = ctx.formParam("firstName");
-          String lastName = ctx.formParam("lastName");
+          PersonRequestDto dto = ctx.bodyAsClass(PersonRequestDto.class);
 
-          ctx.json(controller.createPerson(firstName, lastName));
+          Person created = controller.createPerson(dto.firstName, dto.lastName);
+
+          PersonResponseDto response =
+              new PersonResponseDto(
+                  created.getPersonId(), created.getFirstName(), created.getLastName());
+
+          ctx.json(response);
         });
 
-    // PUT /person/{id}
-    app.put(
+    // PATCH /person/{id}
+    app.patch(
         "/person/{id}",
         ctx -> {
           int id = Integer.parseInt(ctx.pathParam("id"));
-          String firstName = ctx.formParam("firstName");
-          String lastName = ctx.formParam("lastName");
+          PersonRequestDto dto = ctx.bodyAsClass(PersonRequestDto.class);
 
-          ctx.json(controller.updatePerson(id, firstName, lastName));
+          boolean updated = controller.updatePerson(id, dto.firstName, dto.lastName);
+
+          ctx.json(updated);
         });
 
     // DELETE /person/{id}
@@ -52,7 +76,8 @@ public class PersonWebController {
         "/person/{id}",
         ctx -> {
           int id = Integer.parseInt(ctx.pathParam("id"));
-          ctx.json(controller.deletePerson(id));
+          boolean deleted = controller.deletePerson(id);
+          ctx.json(deleted);
         });
   }
 }

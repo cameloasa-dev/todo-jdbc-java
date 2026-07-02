@@ -99,59 +99,46 @@ src/
 ## 🌐 REST API Endpoints
 
 ```text
-Person
-GET /people
+👤 Person — endpointuri REST
+🔹 CRUD
+GET /person — retun a list with people
+GET /person/{id} — 
+POST /person — create a new person
+PATCH /person/{id} — 
+DELETE /person/{id} — delete person
 
-GET /people/{id}
+📝 TodoItem — endpointuri REST
+🔹 CRUD
+GET /items — returnează toate item‑urile
+GET /items/{id} — returnează item‑ul cu ID‑ul dat
+POST /items — creează un item nou
+PATCH /items/{id} — update parțial pe item
+DELETE /items/{id} — șterge item‑ul
 
-POST /people
+🔹 Search
+GET /items/done/{status} — item‑uri finalizate / nefinalizate
+GET /items/unassigned — item‑uri fără assignee
+GET /items/overdue — item‑uri cu deadline depășit
+GET /items/deadline/{date} — item‑uri cu deadline exact
+GET /items/title/{title} — item‑uri filtrate după titlu
 
-PUT /people/{id}
+🧩 TodoItemTask — endpointuri REST
+🔹 CRUD
+GET /tasks — returnează toate task‑urile
+GET /tasks/{id} — returnează task‑ul cu ID‑ul dat
+POST /tasks — creează un task nou
+PATCH /tasks/{id} — update parțial pe task
+DELETE /tasks/{id} — șterge task‑ul
 
-DELETE /people/{id}
-
-TodoItem
-GET /items
-
-GET /items/{id}
-
-POST /items
-
-PUT /items/{id}
-
-DELETE /items/{id}
-
-GET /items/done/{status}
-
-GET /items/unassigned
-
-GET /items/overdue
-
-GET /items/deadline/{date}
-
-GET /items/title/{title}
-
-TodoItemTask
-GET /tasks
-
-GET /tasks/{id}
-
-POST /tasks
-
-PUT /tasks/{id}
-
-DELETE /tasks/{id}
-
-GET /tasks/todoitem/{todoItemId}
-
-GET /tasks/done/{status}
-
-GET /tasks/title/{title}
-
-GET /tasks/overdue
+🔹 Search
+GET /tasks/todoitem/{todoItemId} — task‑uri ale unui item
+GET /tasks/done/{status} — task‑uri finalizate / nefinalizate
+GET /tasks/title/{title} — task‑uri filtrate după titlu
+GET /tasks/overdue — task‑uri cu deadline depășit
 ```
 
-The REST API will be available at: [http://localhost:7000]
+🔹The REST API will be available at:
+[http://localhost:7000]
 
 ## 🧪 Running the Project
 
